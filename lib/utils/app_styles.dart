@@ -20,6 +20,7 @@ class AppStyles {
     color: AppColor.blackColor,
   );
   static TextStyle bold14Black = bold24Black.copyWith(fontSize: 14);
+  static TextStyle bold16Black = bold24Black.copyWith(fontSize: 16);
   static TextStyle bold20Black = GoogleFonts.elMessiri(
     fontSize: 20,
     fontWeight: FontWeight.bold,

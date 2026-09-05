@@ -9,7 +9,11 @@ class MostRecentWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    var height = context.height;
+    var width = context.width;
+
     return Column(
+      spacing: height * 0.02,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text('Most Recently', style: AppStyles.bold16White),

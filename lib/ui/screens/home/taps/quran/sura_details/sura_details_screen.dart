@@ -1,6 +1,9 @@
+import 'dart:ffi';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:islami/model/quran_resources.dart';
+import 'package:islami/ui/screens/home/taps/quran/sura_app_bar.dart';
 import 'package:islami/ui/screens/home/taps/quran/sura_details/sura_content.dart';
 import 'package:islami/utils/app_assets.dart';
 import 'package:islami/utils/app_color.dart';
@@ -27,60 +30,56 @@ class _SuraDetailsScreenState extends State<SuraDetailsScreen> {
     }
     return Scaffold(
       backgroundColor: AppColor.blackColor,
-      appBar: AppBar(
-        centerTitle: true,
-        iconTheme: IconThemeData(color: AppColor.appPrimaryColor),
-        backgroundColor: AppColor.blackColor,
-        title: Text(
-          QuranResources.englishQuranSuraList[index],
-          style: AppStyles.bold20Primary,
+      appBar: SuraAppBar(index: index,isSuraDetailsScreen1:true),
+      body: Container(
+        decoration: BoxDecoration(
+          image: DecorationImage(
+            image:AssetImage (AppAssets.suraDetailsBackground),
+            fit: BoxFit.fill
+          ),
         ),
-      ),
-      body: Column(
-        spacing: height * .02,
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Image.asset(AppAssets.leftCornerImage, height: height * .09),
-              Text(
-                QuranResources.arabicQuranSuraList[index],
-                style: AppStyles.bold24Primary,
-              ),
-              Image.asset(AppAssets.rightCornerImage, height: height * .09),
-            ],
-          ),
-          Expanded(
-            child: versus.isEmpty
-                ? Center(
-                    child: CircularProgressIndicator(
-                      color: AppColor.appPrimaryColor,
+        child: Column(
+          spacing: height * .04,
+          children: [
+            Text(
+              QuranResources.arabicQuranSuraList[index],
+              style: AppStyles.bold24Primary,
+            ),
+            Expanded(
+              child: versus.isEmpty
+                  ? Center(
+                      child: CircularProgressIndicator(
+                        color: AppColor.appPrimaryColor,
+                      ),
+                    )
+                  : ListView.separated(
+                      padding: EdgeInsets.symmetric(
+                        horizontal: width * .02,
+                        vertical: height * .04,
+                      ),
+                      itemBuilder: (context, index) {
+                        // print(index);
+                        return SuraContent(
+                          content: versus[index].trim(),
+                          index: index,
+                          isSelected: selectedIndex == index,
+                          onTap: () {
+                            if (selectedIndex != index) {
+                              setState(() {
+                                selectedIndex = index;
+                              });
+                            }
+                          },
+                        );
+                      },
+                      separatorBuilder: (context, index) {
+                        return SizedBox(height: height * .009);
+                      },
+                      itemCount: versus.length,
                     ),
-                  )
-                : ListView.separated(
-                    itemBuilder: (context, index) {
-                      // print(index);
-                      return SuraContent(
-                        content: versus[index].trim(),
-                        index: index,
-                        isSelected: selectedIndex == index,
-                        onTap: () {
-                          if (selectedIndex != index) {
-                            setState(() {
-                              selectedIndex = index;
-                            });
-                          }
-                        },
-                      );
-                    },
-                    separatorBuilder: (context, index) {
-                      return SizedBox(height: height * .009);
-                    },
-                    itemCount: versus.length,
-                  ),
-          ),
-          Image.asset(AppAssets.mosque_02Image, height: height * .12),
-        ],
+            ),
+SizedBox(height: height*.08)          ],
+        ),
       ),
     );
   }
@@ -90,9 +89,9 @@ class _SuraDetailsScreenState extends State<SuraDetailsScreen> {
       'assets/files/quran/${index + 1}.txt',
     );
     List<String> lines = fileContent.split('\n');
-    for (int i = 0; i < lines.length; i++) {
-      print(lines[i]);
-    }
+    // for (int i = 0; i < lines.length; i++) {
+    //   print(lines[i]);
+    // }
     versus = lines;
 
     Future.delayed(Duration(seconds: 1), () => setState(() {}));
