@@ -3,13 +3,13 @@ import 'package:islami/utils/app_color.dart';
 import 'package:islami/utils/app_styles.dart';
 import 'package:islami/utils/size_utils.dart';
 
-class SuraContent extends StatefulWidget {
+class  HadeethContent extends StatefulWidget {
   final String content;
   final int index;
   final bool isSelected;
   final VoidCallback onTap;
 
-  const SuraContent({
+  const HadeethContent({
     super.key,
     required this.content,
     required this.index,
@@ -18,10 +18,10 @@ class SuraContent extends StatefulWidget {
   });
 
   @override
-  State<SuraContent> createState() => _SuraContentState();
+  State<HadeethContent> createState() => _HadeethContentState();
 }
 
-class _SuraContentState extends State<SuraContent> {
+class _HadeethContentState extends State<HadeethContent> {
   bool isSelected = false;
 
   @override
