@@ -1,14 +1,14 @@
-import 'dart:ffi';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:islami/model/quran_resources.dart';
+import 'package:islami/provider/most_recent_provider.dart';
 import 'package:islami/ui/screens/home/taps/quran/sura_app_bar.dart';
 import 'package:islami/ui/screens/home/taps/quran/sura_details/sura_content.dart';
 import 'package:islami/utils/app_assets.dart';
 import 'package:islami/utils/app_color.dart';
 import 'package:islami/utils/app_styles.dart';
 import 'package:islami/utils/size_utils.dart';
+import 'package:provider/provider.dart';
 
 class SuraDetailsScreen extends StatefulWidget {
   @override
@@ -19,10 +19,13 @@ class _SuraDetailsScreenState extends State<SuraDetailsScreen> {
   // const SuraDetailsScreen({super.key});
   List<String> versus = [];
   int selectedIndex = -1;
+  late MostRecentProvider mostRecentProvider;
 
   @override
   Widget build(BuildContext context) {
     int index = ModalRoute.of(context)?.settings.arguments as int;
+    mostRecentProvider = Provider.of<MostRecentProvider>(context);
+
     var width = context.width;
     var height = context.height;
     if (versus.isEmpty) {
@@ -30,12 +33,12 @@ class _SuraDetailsScreenState extends State<SuraDetailsScreen> {
     }
     return Scaffold(
       backgroundColor: AppColor.blackColor,
-      appBar: SuraAppBar(index: index,isSuraDetailsScreen1:true),
+      appBar: SuraAppBar(index: index, isSuraDetailsScreen1: true),
       body: Container(
         decoration: BoxDecoration(
           image: DecorationImage(
-            image:AssetImage (AppAssets.suraDetailsBackground),
-            fit: BoxFit.fill
+            image: AssetImage(AppAssets.suraDetailsBackground),
+            fit: BoxFit.fill,
           ),
         ),
         child: Column(
@@ -78,7 +81,8 @@ class _SuraDetailsScreenState extends State<SuraDetailsScreen> {
                       itemCount: versus.length,
                     ),
             ),
-SizedBox(height: height*.08)          ],
+            SizedBox(height: height * .08),
+          ],
         ),
       ),
     );
@@ -89,11 +93,19 @@ SizedBox(height: height*.08)          ],
       'assets/files/quran/${index + 1}.txt',
     );
     List<String> lines = fileContent.split('\n');
+    lines.removeWhere((line) => line.trim().isEmpty);
     // for (int i = 0; i < lines.length; i++) {
     //   print(lines[i]);
     // }
     versus = lines;
 
     Future.delayed(Duration(seconds: 1), () => setState(() {}));
+  }
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+    mostRecentProvider.readMostRecent();
   }
 }

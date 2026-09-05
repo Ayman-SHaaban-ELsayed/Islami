@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:islami/model/quran_resources.dart';
+import 'package:islami/provider/most_recent_provider.dart';
 import 'package:islami/ui/screens/home/taps/quran/widgets/most_recent_widget.dart';
 import 'package:islami/ui/screens/home/taps/quran/widgets/sura_item_widget.dart';
 import 'package:islami/utils/app_assets.dart';
 import 'package:islami/utils/app_color.dart';
 import 'package:islami/utils/app_routes.dart';
 import 'package:islami/utils/app_styles.dart';
+import 'package:islami/utils/shared_pref_utils.dart';
 import 'package:islami/utils/size_utils.dart';
+import 'package:provider/provider.dart';
 
 class QuranTab extends StatefulWidget {
   @override
@@ -15,6 +18,7 @@ class QuranTab extends StatefulWidget {
 
 class _QuranTabState extends State<QuranTab> {
   List<int> filterList = List.generate(114, (index) => index);
+  late MostRecentProvider mostRecentProvider;
 
   @override
   Widget build(BuildContext context) {
@@ -28,40 +32,42 @@ class _QuranTabState extends State<QuranTab> {
     //عن طريق استخدام الاكستنشن
     var height = context.height;
     var width = context.width;
+    mostRecentProvider = Provider.of<MostRecentProvider>(context);
+
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: width * .04),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        spacing: height * .02,
-        children: [
-          TextField(
-            style: AppStyles.bold20White,
-            cursorColor: AppColor.appPrimaryColor,
-            decoration: InputDecoration(
-              filled: true,
-              fillColor: AppColor.blackBgColor,
-              enabledBorder: _buildDecorationBorder(),
-              focusedBorder: _buildDecorationBorder(),
-              prefixIcon: Image.asset(AppAssets.quranIcon),
-              hintText: 'Sura Name',
-              hintStyle: Theme.of(context).textTheme.headlineLarge,
-              //    أو
-              // hintStyle: AppStyles.bold16White
-              //أو
-              // hintStyle: TextStyle(
-              //   fontSize: 16,
-              //       fontWeight: FontWeight.bold,
-              //   color: AppColor.whiteColor
-              // )
+      child: SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          spacing: height * .02,
+          children: [
+            TextField(
+              style: AppStyles.bold20White,
+              cursorColor: AppColor.appPrimaryColor,
+              decoration: InputDecoration(
+                filled: true,
+                fillColor: AppColor.blackBgColor,
+                enabledBorder: _buildDecorationBorder(),
+                focusedBorder: _buildDecorationBorder(),
+                prefixIcon: Image.asset(AppAssets.quranIcon),
+                hintText: 'Sura Name',
+                hintStyle: Theme.of(context).textTheme.headlineLarge,
+                //    أو
+                // hintStyle: AppStyles.bold16White
+                //أو
+                // hintStyle: TextStyle(
+                //   fontSize: 16,
+                //       fontWeight: FontWeight.bold,
+                //   color: AppColor.whiteColor
+                // )
+              ),
+              onChanged: (text) {
+                searchBySuraName(text);
+              },
             ),
-            onChanged: (text) {
-              searchBySuraName(text);
-            },
-          ),
-          MostRecentWidget(),
-          Text('Suras List', style: AppStyles.bold16White),
-          Expanded(
-            child: filterList.isEmpty
+            MostRecentWidget(),
+            Text('Suras List', style: AppStyles.bold16White),
+            filterList.isEmpty
                 ? Center(
                     child: Text(
                       'No Sura Name Found',
@@ -69,9 +75,14 @@ class _QuranTabState extends State<QuranTab> {
                     ),
                   )
                 : ListView.separated(
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
                     itemBuilder: (context, index) {
                       return InkWell(
                         onTap: () {
+                          //save last sura index in shared pref
+                          saveLastSuraIndex(filterList[index]);
+                          //navigate to details
                           Navigator.of(context).pushNamed(
                             AppRoutes.suraDetailsScreenRouteName,
                             arguments: filterList[index],
@@ -91,8 +102,8 @@ class _QuranTabState extends State<QuranTab> {
                     },
                     itemCount: filterList.length,
                   ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
@@ -124,4 +135,19 @@ class _QuranTabState extends State<QuranTab> {
     filterList = searchList;
     setState(() {});
   }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    //بيستنى لما يتبنى البرنامج قبل ميتعامل مع البروفيدر
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      mostRecentProvider.readMostRecent();
+    });
+  }
+  // Future<List<int>> readTheMostRecent() async {
+  //   var list = await mostRecentProvider.mostRecentList;
+  //
+  //   return list;
+  // }
 }

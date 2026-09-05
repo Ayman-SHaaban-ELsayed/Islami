@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:islami/model/quran_resources.dart';
+import 'package:islami/provider/most_recent_provider.dart';
 import 'package:islami/ui/screens/home/taps/quran/sura_app_bar.dart';
 import 'package:islami/ui/screens/home/taps/quran/sura_details2/sura_content2.dart';
 import 'package:islami/utils/app_assets.dart';
 import 'package:islami/utils/app_color.dart';
 import 'package:islami/utils/app_styles.dart';
 import 'package:islami/utils/size_utils.dart';
+import 'package:provider/provider.dart';
 
 class SuraDetailsScreen2 extends StatefulWidget {
   @override
@@ -16,20 +18,21 @@ class SuraDetailsScreen2 extends StatefulWidget {
 class _SuraDetailsScreenState extends State<SuraDetailsScreen2> {
   // const SuraDetailsScreen({super.key});
   String versus = '';
-
-  int selectedIndex = -1;
+  late MostRecentProvider mostRecentProvider;
 
   @override
   Widget build(BuildContext context) {
     int index = ModalRoute.of(context)?.settings.arguments as int;
+    mostRecentProvider = Provider.of<MostRecentProvider>(context);
     var width = context.width;
     var height = context.height;
+
     if (versus.isEmpty) {
       loadSuraFile(index);
     }
     return Scaffold(
       backgroundColor: AppColor.blackColor,
-      appBar: SuraAppBar(index: index,isSuraDetailsScreen1: false,),
+      appBar: SuraAppBar(index: index, isSuraDetailsScreen1: false),
       body: Column(
         spacing: height * .02,
         children: [
@@ -56,7 +59,11 @@ class _SuraDetailsScreenState extends State<SuraDetailsScreen2> {
                   )
                 : SingleChildScrollView(child: SuraContent2(content: versus)),
           ),
-          Image.asset(AppAssets.mosque_02Image, height: height * .12),
+          Image.asset(
+            AppAssets.mosque_02Image,
+            height: height * .12,
+            fit: BoxFit.fill,
+          ),
         ],
       ),
     );
@@ -67,11 +74,19 @@ class _SuraDetailsScreenState extends State<SuraDetailsScreen2> {
       'assets/files/quran/${index + 1}.txt',
     );
     List<String> lines = fileContent.split('\n');
+    lines.removeWhere((line) => line.trim().isEmpty);
     for (int i = 0; i < lines.length; i++) {
-      lines[i] += '[${i + 1}]';
+      lines[i] = '${lines[i].trim()} [${i + 1}]';
     }
     versus = lines.join(' ');
 
     Future.delayed(Duration(seconds: 1), () => setState(() {}));
+  }
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+    mostRecentProvider.readMostRecent();
   }
 }
