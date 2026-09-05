@@ -40,7 +40,7 @@ class SuraItemWidget extends StatelessWidget {
         ),
         Spacer(),
         Text(
-          QuranResources.englishQuranSuraList[index],
+          QuranResources.arabicQuranSuraList[index],
           style: AppStyles.bold20White,
         ),
       ],

@@ -2,6 +2,7 @@ class AppAssets {
   static const String location = 'assets/images';
   static const String quranBg = "$location/quran_bg.png";
   static const String hadethBg = "$location/hadith_bg_img.png";
+  static const String hadithCardBgImg = "$location/hadith_card_bg_img.png";
   static const String sebhaBg = "$location/sebha_bg.png";
   static const String timeBg = "$location/time_bg.png";
   static const String radioBg = "$location/radio_bg.png";
@@ -25,6 +26,10 @@ class AppAssets {
   static const String shape_07Image = "$location/Shape_07.png";
   static const String rightCornerImage = "$location/img_right_corner.png";
   static const String leftCornerImage = "$location/img_left_corner.png";
+
+
+
+  static const String suraDetailsBackground = "$location/sura_details_background.png";
   static const String sebha2Image = "$location/sebha2_img.png";
   static const String sebhaImage = "$location/sebha_img.png";
   static const String soundWave1 = "$location/soundWave1.png";
