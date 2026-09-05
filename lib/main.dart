@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:islami/provider/most_recent_provider.dart';
 import 'package:islami/ui/home_screen.dart';
 import 'package:islami/ui/on_boarding_page.dart';
 import 'package:islami/ui/screens/home/taps/hadeeth/hadeeth_details/hadeeth_details_screen.dart';
@@ -6,9 +7,15 @@ import 'package:islami/ui/screens/home/taps/quran/sura_details/sura_details_scre
 import 'package:islami/ui/screens/home/taps/quran/sura_details2/sura_details_screen2.dart';
 import 'package:islami/utils/app_routes.dart';
 import 'package:islami/utils/app_theme.dart';
+import 'package:provider/provider.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(
+    ChangeNotifierProvider(
+      create: (context) => MostRecentProvider(),
+      child: MyApp(),
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {
@@ -24,7 +31,8 @@ class MyApp extends StatelessWidget {
         AppRoutes.homeRouteName: (context) => HomeScreen(),
         AppRoutes.onBoardScreenRouteName: (context) => OnBoardingPage(),
         AppRoutes.suraDetailsScreenRouteName: (context) => SuraDetailsScreen(),
-        AppRoutes.hadeethDetailsScreenRouteName: (context) => HadeethDetailsScreen(),
+        AppRoutes.hadeethDetailsScreenRouteName: (context) =>
+            HadeethDetailsScreen(),
         AppRoutes.suraDetailsScreenRouteName2: (context) =>
             SuraDetailsScreen2(),
       },
